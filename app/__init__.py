@@ -31,12 +31,14 @@ def create_app():
     from app.routes.weather_routes import weather_bp
     from app.routes.auth_routes import auth_bp
     from app.routes.resultset_routes import resultset_bp
+    from app.routes.news_routes import news_bp
 
     app.register_blueprint(user_bp, url_prefix='/api/users')
     app.register_blueprint(vegetable_bp, url_prefix='/api/vegetables')
     app.register_blueprint(weather_bp, url_prefix='/api/weather')
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(resultset_bp, url_prefix='/api')
+    app.register_blueprint(news_bp, url_prefix='/api')
 
 
     @app.route('/')
