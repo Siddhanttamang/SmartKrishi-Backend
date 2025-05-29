@@ -34,11 +34,19 @@ def login():
 
     user = UserModel.query.filter_by(email=email).first()
     if not user or not bcrypt.verify(password, user.password):
-        return jsonify({"msg": "Invalid credentials"}), 401
+        return jsonify({"error": "Invalid credentials"}), 401
 
     access_token = create_access_token(
     identity=str(user.id),  # must be a string
     additional_claims={"role": user.role})
 
 
-    return jsonify(access_token=access_token), 200
+    return jsonify({
+    "access_token": access_token,
+    "user": {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "role": user.role
+    }
+}), 200
