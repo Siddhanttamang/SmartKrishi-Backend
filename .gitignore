@@ -1,1 +1,3 @@
 .venv
+# Flask-Migrate migration history
+migrations/versions/

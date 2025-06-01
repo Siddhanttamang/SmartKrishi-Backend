@@ -11,14 +11,17 @@ api = Api(resultset_bp)
 
 # Request parser
 report_args = reqparse.RequestParser()
-report_args.add_argument('class_name', type=str, required=True, help="Class name is required")
-report_args.add_argument('report', type=str, required=True, help="Report is required")
 
-# Response fields (no image_path)
+report_args.add_argument('crop', type=str, required=True, help="Crop is required")
+report_args.add_argument('disease', type=str, required=True, help="Disease is required")
+report_args.add_argument('recommendation', type=str, required=True, help="Recommendation is required")
+
+
 report_fields = {
     'id': fields.Integer,
-    'class_name': fields.String,
-    'report': fields.String,
+    'crop_name': fields.String,
+    'disease': fields.String,
+    'recommendation': fields.String,
     'user_id': fields.Integer
 }
 
@@ -36,13 +39,15 @@ class ReportListResource(Resource):
         args = report_args.parse_args()
 
         new_report = ResultSetModel(
-            class_name=args['class_name'],
-            report=args['report'],
+            crop_name=args['crop'],
+            disease=args['disease'],
+            recommendation=args['recommendation'],
             user_id=user_id
         )
         db.session.add(new_report)
         db.session.commit()
         return new_report, 201
+
 
 class ReportResource(Resource):
     @jwt_required()
