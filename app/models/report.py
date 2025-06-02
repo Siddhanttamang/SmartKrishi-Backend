@@ -1,7 +1,7 @@
 from app import db
 from datetime import datetime, timezone
 
-class ResultSetModel(db.Model):
+class ReportModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     crop_name = db.Column(db.String(100), nullable=False)
     disease = db.Column(db.Text, nullable=False)
@@ -9,8 +9,8 @@ class ResultSetModel(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('user_model.id'), nullable=False)
 
-    user = db.relationship('UserModel', backref=db.backref('resultsets', lazy=True))
+    user = db.relationship('UserModel', backref=db.backref('report', lazy=True))
 
     def __repr__(self):
-        return f"<ResultSet(class_name={self.class_name}, report={self.report})>"
+        return f"<Report(class_name={self.class_name}, report={self.report})>"
 
