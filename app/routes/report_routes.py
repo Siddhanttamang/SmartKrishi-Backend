@@ -22,7 +22,8 @@ report_fields = {
     'crop_name': fields.String,
     'disease': fields.String,
     'recommendation': fields.String,
-    'user_id': fields.Integer
+    'user_id': fields.Integer,
+    'created_at': fields.String
 }
 class ReportListResource(Resource):
     @jwt_required()

@@ -12,5 +12,6 @@ class ReportModel(db.Model):
     user = db.relationship('UserModel', backref=db.backref('report', lazy=True))
 
     def __repr__(self):
-        return f"<Report(class_name={self.class_name}, report={self.report})>"
+        return f"<Report(crop_name={self.crop_name}, disease={self.disease})>"
+
 
