@@ -1,10 +1,14 @@
-from flask import Blueprint, request
+import os
+from flask import Blueprint, request, current_app
 from flask_restful import Resource, reqparse, fields, marshal_with, Api, abort
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from werkzeug.utils import secure_filename
+
 from app import db
 from app.models.vegetable import VegetableModel
 from app.models.user import UserModel
 
+# Blueprint setup
 vegetable_bp = Blueprint('vegetable_bp', __name__)
 api = Api(vegetable_bp)
 
@@ -16,7 +20,7 @@ veg_args.add_argument('price', type=float, required=True, help="Price is require
 veg_args.add_argument('image_url', type=str, help="Image URL or base64 string")
 veg_args.add_argument('user_id', type=int, help="Optional: will be overridden by JWT")
 
-# Response fields
+# Response marshal fields
 veg_fields = {
     'id': fields.Integer,
     'name': fields.String,
@@ -24,11 +28,12 @@ veg_fields = {
     'price': fields.Float,
     'image_url': fields.String,
     'user_id': fields.Integer,
-    'user_name':fields.String(attribute=lambda x: x.user.name if x.user else None),
+    'user_name': fields.String(attribute=lambda x: x.user.name if x.user else None),
     'user_address': fields.String(attribute=lambda x: x.user.address if x.user else None),
     'user_contact': fields.String(attribute=lambda x: x.user.contact if x.user else None)
 }
 
+# Sorting helper
 def sort_query(query, sort_by, order):
     direction = {'asc': True, 'desc': False}.get(order, True)
 
@@ -38,7 +43,7 @@ def sort_query(query, sort_by, order):
         return query.join(UserModel).order_by(UserModel.address.asc() if direction else UserModel.address.desc())
     return query
 
-
+# /api/vegetables/
 class VegetablesResource(Resource):
     @marshal_with(veg_fields)
     def get(self):
@@ -56,21 +61,48 @@ class VegetablesResource(Resource):
     @marshal_with(veg_fields)
     @jwt_required()
     def post(self):
-        args = veg_args.parse_args()
         user_id = int(get_jwt_identity())
 
+        # Get form fields (multipart/form-data)
+        name = request.form.get('name')
+        quantity = request.form.get('quantity')
+        price = request.form.get('price')
+        image = request.files.get('image')
+
+        # Validate required fields
+        if not all([name, quantity, price, image]):
+            abort(400, message="All fields including image are required")
+
+        # Save image
+        filename = secure_filename(image.filename)
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        image.save(filepath)
+
+        # Generate image URL
+        image_url = f"/uploads/{filename}"
+
+        try:
+            quantity = float(quantity)
+            price = float(price)
+        except ValueError:
+            abort(400, message="Price and Quantity must be numbers")
+
+        # Save to database
         veg = VegetableModel(
-            name=args['name'],
-            quantity=args['quantity'],
-            price=args['price'],
-            image_url=args.get('image_url'),
+            name=name,
+            quantity=quantity,
+            price=price,
+            image_url=image_url,
             user_id=user_id
         )
+
         db.session.add(veg)
         db.session.commit()
+
         return veg, 201
 
 
+# /api/vegetables/<id>
 class VegetableResource(Resource):
     @marshal_with(veg_fields)
     def get(self, id):
@@ -87,7 +119,6 @@ class VegetableResource(Resource):
         veg.quantity = args['quantity']
         veg.price = args['price']
         veg.image_url = args.get('image_url') or veg.image_url
-        # Only allow the user_id to update if it's provided explicitly
         veg.user_id = args.get('user_id') or veg.user_id
 
         db.session.commit()
@@ -101,6 +132,6 @@ class VegetableResource(Resource):
         return {'msg': 'Vegetable deleted'}, 204
 
 
-# Resource registration
+# Register resources
 api.add_resource(VegetablesResource, '/')
 api.add_resource(VegetableResource, '/<int:id>')

@@ -30,7 +30,20 @@ class ReportListResource(Resource):
     @marshal_with(report_fields)
     def get(self):
         user_id = int(get_jwt_identity())
-        return ReportModel.query.filter_by(user_id=user_id).all()
+        report = ReportModel.query.filter_by(user_id=user_id).all()
+        if not report:
+            abort(404, message="Report not found")
+        return report
+    @jwt_required()
+    def delete(self, id):
+        user_id = int(get_jwt_identity())
+        report = ReportModel.query.filter_by(id=id, user_id=user_id).first()
+        if not report:
+            abort(404, message="Report not found")
+
+        db.session.delete(report)
+        db.session.commit()
+        return {'message': 'Report deleted successfully'}, 200
 
     @jwt_required()
     @marshal_with(report_fields)
