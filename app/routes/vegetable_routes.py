@@ -26,7 +26,7 @@ veg_fields = {
     'name': fields.String,
     'quantity': fields.Float,
     'price': fields.Float,
-    'image_url': fields.String,
+    'image_url': fields.String(attribute=lambda x: request.host_url.rstrip('/') + x.image_url),
     'user_id': fields.Integer,
     'user_name': fields.String(attribute=lambda x: x.user.name if x.user else None),
     'user_address': fields.String(attribute=lambda x: x.user.address if x.user else None),
