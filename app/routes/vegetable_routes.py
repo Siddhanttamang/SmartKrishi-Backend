@@ -7,6 +7,7 @@ from werkzeug.utils import secure_filename
 from app import db
 from app.models.vegetable import VegetableModel
 from app.models.user import UserModel
+from uuid import uuid4
 
 # Blueprint setup
 vegetable_bp = Blueprint('vegetable_bp', __name__)
@@ -33,30 +34,13 @@ veg_fields = {
     'user_contact': fields.String(attribute=lambda x: x.user.contact if x.user else None)
 }
 
-# Sorting helper
-def sort_query(query, sort_by, order):
-    direction = {'asc': True, 'desc': False}.get(order, True)
-
-    if sort_by == 'price':
-        return query.order_by(VegetableModel.price.asc() if direction else VegetableModel.price.desc())
-    elif sort_by == 'location':
-        return query.join(UserModel).order_by(UserModel.address.asc() if direction else UserModel.address.desc())
-    return query
-
 # /api/vegetables/
 class VegetablesResource(Resource):
     @marshal_with(veg_fields)
     def get(self):
-        search = request.args.get('search')
-        sort_by = request.args.get('sort')
-        order = request.args.get('order', 'asc')
+        vegetables = VegetableModel.query.all()
+        return vegetables
 
-        query = VegetableModel.query
-        if search:
-            query = query.filter(VegetableModel.name.ilike(f"%{search}%"))
-
-        query = sort_query(query, sort_by, order)
-        return query.all()
 
     @marshal_with(veg_fields)
     @jwt_required()
@@ -74,12 +58,15 @@ class VegetablesResource(Resource):
             abort(400, message="All fields including image are required")
 
         # Save image
-        filename = secure_filename(image.filename)
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        ext = os.path.splitext(secure_filename(image.filename))[1]
+        unique_filename = f"{uuid4().hex}{ext}"
+
+        # Save image
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], unique_filename)
         image.save(filepath)
 
         # Generate image URL
-        image_url = f"/uploads/{filename}"
+        image_url = f"/uploads/{unique_filename}"
 
         try:
             quantity = float(quantity)
