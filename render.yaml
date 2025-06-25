@@ -3,7 +3,7 @@ services:
     name: smartkrishi-backend
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn run:app
+    startCommand: gunicorn app:app
     envVars:
       - key: FLASK_ENV
         value: production
