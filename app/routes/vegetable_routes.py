@@ -100,23 +100,45 @@ class VegetableResource(Resource):
     @jwt_required()
     def patch(self, id):
         veg = VegetableModel.query.get_or_404(id, description="Vegetable not found")
-        args = veg_args.parse_args()
+        current_user_id = int(get_jwt_identity())
 
-        veg.name = args['name']
-        veg.quantity = args['quantity']
-        veg.price = args['price']
-        veg.image_url = args.get('image_url') or veg.image_url
-        veg.user_id = args.get('user_id') or veg.user_id
+        if veg.user_id != current_user_id:
+            abort(403, message="You can only update your own products.")
+
+        name = request.form.get('name')
+        quantity = request.form.get('quantity')
+        price = request.form.get('price')
+
+        if name:
+            veg.name = name
+        if quantity:
+            try:
+                veg.quantity = float(quantity)
+            except ValueError:
+                abort(400, message="Invalid quantity")
+        if price:
+            try:
+                veg.price = float(price)
+            except ValueError:
+                abort(400, message="Invalid price")
 
         db.session.commit()
         return veg
 
+
+
     @jwt_required()
     def delete(self, id):
         veg = VegetableModel.query.get_or_404(id, description="Vegetable not found")
+        current_user_id = int(get_jwt_identity())
+
+        if veg.user_id != current_user_id:
+            abort(403, message="You can only delete your own products.")
+
         db.session.delete(veg)
         db.session.commit()
         return {'msg': 'Vegetable deleted'}, 204
+
 
 
 # Register resources
