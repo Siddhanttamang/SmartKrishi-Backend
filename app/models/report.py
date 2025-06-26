@@ -14,8 +14,6 @@ class ReportModel(db.Model):
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-   
-    user = db.relationship('UserModel', backref=db.backref('reports', lazy=True))
 
     def __repr__(self):
         return f"<Report(crop_name={self.crop_name}, disease={self.disease},user_id={self.user_id})>"

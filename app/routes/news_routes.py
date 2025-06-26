@@ -78,7 +78,7 @@ def get_vegetables():
             "status": "success",
             "source": "scraped",
             "data": data
-        }), 200
+        }), 1000
     except Exception as e:
         return jsonify({
             "status": "error",

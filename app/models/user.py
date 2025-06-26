@@ -11,7 +11,19 @@ class UserModel(db.Model):
     address = db.Column(db.String(100))
     contact = db.Column(db.String(15), unique=True, nullable=True)
 
-    vegetables = db.relationship('VegetableModel', backref='user', lazy=True)
+    vegetables = db.relationship(
+        'VegetableModel',
+        backref='user',
+        cascade="all, delete-orphan",  
+        lazy=True
+    )
+
+    reports = db.relationship(
+        'ReportModel',
+        backref='user',
+        cascade="all, delete-orphan",  
+        lazy=True
+    )
 
     def __repr__(self):
         return f"<User(name={self.name}, email={self.email}, address={self.address}, contact={self.contact})>"
