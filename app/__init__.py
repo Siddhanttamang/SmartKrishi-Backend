@@ -8,6 +8,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from datetime import timedelta
 
+
 # Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
@@ -35,7 +36,12 @@ def allowed_file(filename):
 def create_app():
     load_dotenv()  # Load .env variables
 
-    app = Flask(__name__)
+    import os
+    app = Flask(__name__, template_folder=os.path.join(os.path.dirname(__file__), 'templates'))
+
+
+
+
     CORS(app)
 
     # Upload folder setup
@@ -44,6 +50,7 @@ def create_app():
 
     # Configurations
     app.config['UPLOAD_FOLDER'] = upload_folder
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'super-secret-key')
     app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB limit
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///smartkrishi.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -80,5 +87,31 @@ def create_app():
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    
+    from flask_admin import Admin
+    from flask_admin.contrib.sqla import ModelView
+
+    # Import your models
+    from app.models.user import UserModel
+    from app.models.vegetable import VegetableModel
+    from app.models.report import ReportModel  # Adjust name if different
+    from app.models.news import NewsModel  
+    from app.admin.news_admin import NewsAdmin
+    from app.admin.vegetables_admin import VegetableAdmin
+
+    # Setup Flask-Admin
+    admin = Admin(app, name='SmartKrishi Admin', template_mode='bootstrap4')
+
+    # Register models in the admin panel
+    admin.add_view(ModelView(UserModel, db.session))
+    # admin.add_view(ModelView(VegetableModel, db.session))
+    admin.add_view(VegetableAdmin(VegetableModel, db.session))
+    admin.add_view(ModelView(ReportModel, db.session))
+     
+    admin.add_view(NewsAdmin(NewsModel, db.session))
+    
+
+
+
 
     return app
