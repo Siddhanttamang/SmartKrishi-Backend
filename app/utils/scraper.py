@@ -4,6 +4,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
+import re
+
+def clean_name(name):
+    name = name.strip()
+    # Remove 'per kg', 'Per KG', etc. (case-insensitive)
+    name = re.sub(r'\s*[Pp]er\s*[Kk][Gg]\s*$', '', name)
+    return name.strip()
 
 def scrape_vegetables():
     options = Options()
@@ -34,7 +41,7 @@ def scrape_vegetables():
         for row in rows:
             cols = row.find_all("td")
             if len(cols) >= 4:
-                name = cols[0].get_text(strip=True)
+                name = clean_name(cols[0].get_text(strip=True))
                 min_price = cols[2].get_text(strip=True)
                 max_price = cols[3].get_text(strip=True)
 
