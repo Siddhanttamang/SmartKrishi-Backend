@@ -1,12 +1,8 @@
 {% extends 'admin/model/list.html' %}
 
 {% block body %}
-    {{ super() }}
-    <div class="row mt-3">
-        <div class="col">
-            <a href="{{ url_for('.index_view', scrape='true') }}" class="btn btn-primary">
-                🔄 Scrape & Update News
-            </a>
-        </div>
-    </div>
+  {{ super() }}
+  <a href="{{ url_for('.index_view', scrape='true') }}" class="btn btn-primary ms-2">
+    🔄 Scrape & Update News
+  </a>
 {% endblock %}

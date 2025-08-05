@@ -1,18 +1,20 @@
-from flask_admin.contrib.sqla import ModelView
 from flask import redirect, request, flash, url_for
 from flask_admin import expose
 from app.models.news import NewsModel
 from app.utils.scraper import scrape_vegetables
 from app import db
+from .SecureModelView import SecureModelView
 
-class NewsAdmin(ModelView):
-    list_template = '/admin/newsmodel/list.html'
-    can_create = False
+class NewsAdmin(SecureModelView):
+    list_template = 'admin/newsmodel/list.html'
+    can_create = True
     can_delete = True
     can_edit = True
     column_searchable_list = ['name']
     column_sortable_list = ['name', 'price', 'updated_at']
     column_list = ['name', 'price', 'created_at', 'updated_at']
+
+
     
 
     @expose('/scrape')

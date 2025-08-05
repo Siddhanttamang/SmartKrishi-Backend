@@ -1,7 +1,7 @@
-from flask_admin.contrib.sqla import ModelView
 from markupsafe import Markup
+from .SecureModelView import SecureModelView
 
-class VegetableAdmin(ModelView):
+class VegetableAdmin(SecureModelView):
     can_delete = True
     can_edit = True
     column_searchable_list = ['name']
@@ -14,6 +14,7 @@ class VegetableAdmin(ModelView):
         'image': 'Image',
         'name': 'Vegetable Name',
     }
+   
 
     def _format_image(self, context, model, name):
         if model.image_url:
