@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime, timezone
 
 class VegetableModel(db.Model):
     __tablename__ = 'vegetables' 
@@ -7,6 +8,7 @@ class VegetableModel(db.Model):
     quantity = db.Column(db.Float, nullable=False)
     price = db.Column(db.Float, nullable=False)
     image_url = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)  
 

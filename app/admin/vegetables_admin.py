@@ -7,7 +7,7 @@ class VegetableAdmin(SecureModelView):
     column_searchable_list = ['name']
 
     column_sortable_list = ['name', 'price']
-    column_list = ['name', 'quantity', 'price', 'seller_name', 'image']
+    column_list = ['name', 'quantity', 'price', 'seller_name', 'image','Created_at']
 
     column_labels = {
         'seller_name': 'Seller',
