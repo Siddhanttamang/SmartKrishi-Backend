@@ -15,6 +15,7 @@ class NewsModel(db.Model):
             'id': self.id,
             'name': self.name,
             'price': self.price,
-            'created_at': self.created_at.isoformat(),
-            'updated_at': self.updated_at.isoformat()
+            'created_at': self.created_at.strftime('%d %b %Y, %I:%M %p') if self.created_at else None,
+            'updated_at': self.updated_at.strftime('%d %b %Y, %I:%M %p') if self.updated_at else None
         }
+

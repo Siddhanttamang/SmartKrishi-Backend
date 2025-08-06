@@ -29,7 +29,7 @@ veg_fields = {
     'price': fields.Float,
     'image_url': fields.String(attribute=lambda x: request.host_url.rstrip('/') + x.image_url),
     'user_id': fields.Integer,
-    'created_at': fields.String,
+    'created_at': fields.String(attribute=lambda x: x.created_at.strftime('%d %b %Y, %I:%M %p') if x.created_at else None),
     'user_name': fields.String(attribute=lambda x: x.user.name if x.user else None),
     'user_address': fields.String(attribute=lambda x: x.user.address if x.user else None),
     'user_contact': fields.String(attribute=lambda x: x.user.contact if x.user else None)

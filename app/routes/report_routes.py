@@ -29,7 +29,9 @@ report_fields = {
     'recommendation': fields.String,
     'image_url': fields.String(attribute=lambda x: request.host_url.rstrip('/') + x.image_url if x.image_url else None),
     'user_id': fields.Integer,
-    'created_at': fields.String
+    'user_name':fields.String(attribute=lambda x: x.user.name if x.user else None),
+    'created_at': fields.String(attribute=lambda x: x.created_at.strftime('%d %b %Y, %I:%M %p') if x.created_at else None)
+
 }
 class ReportListResource(Resource):
     @jwt_required()
