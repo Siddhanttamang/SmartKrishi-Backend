@@ -14,10 +14,10 @@ class UserAdmin(ModelView):
         'password': PasswordField('Password', validators=[DataRequired()])
     }
 
+    column_searchable_list = ['name', 'email', 'contact']  # <-- Add this line
 
     def on_model_change(self, form, model, is_created):
         if form.password.data:
             model.password = bcrypt.hash(form.password.data)
         if is_created:
             model.role = 'user'
-

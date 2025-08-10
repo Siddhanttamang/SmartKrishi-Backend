@@ -1,52 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>SmartKrishi Admin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <title>SmartKrishi Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
 
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    rel="stylesheet"
+  />
 
-    <!-- Font Awesome (used by Flask-Admin for icons) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
+
+  <style>
+    /* Hide the "With selected" dropdown toggle */
+    a.nav-link.dropdown-toggle[data-toggle="dropdown"] {
+      display: none !important;
+    }
+
+    /* Hide the dropdown menu (the bulk actions list) */
+    a.nav-link.dropdown-toggle[data-toggle="dropdown"] + .dropdown-menu {
+      display: none !important;
+    }
+
+    /* Sidebar styles for mobile: 50% width + overlay */
+    @media (max-width: 767.98px) {
+      #sidebarMenu {
+        width: 50vw !important;      /* half screen width */
+        height: 100vh !important;    /* full height */
+        position: fixed;
+        z-index: 1045;               /* above main content */
+        top: 0;
+        left: 0;
+        background-color: #212529;   /* Bootstrap dark */
+        overflow-y: auto;
+        transition: transform 0.3s ease-in-out;
+        /* Initially hidden: slide out left */
+        transform: translateX(-100%);
+      }
+
+      #sidebarMenu.show {
+        transform: translateX(0);
+      }
+
+      /* Overlay behind sidebar */
+      body.sidebar-open::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1040;
+      }
+
+      /* Disable body scroll when sidebar open */
+      body.sidebar-open {
+        overflow: hidden;
+      }
+    }
+  </style>
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body style="margin: 0;">
 
-<div class="d-flex" style="height: 100vh; overflow: hidden;">
+  <!-- Navbar toggle visible only on small screens -->
+  <nav class="navbar navbar-dark bg-dark d-md-none">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu"
+        aria-controls="sidebarMenu"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand text-white" href="/admin/users/">🌱 SmartKrishi</a>
+    </div>
+  </nav>
 
-    <div class="bg-dark text-white p-3" style="width: 220px; flex-shrink: 0; overflow-y: auto;">
-        <h4 class="mb-4"><a href="/admin/users/" class="text-white text-decoration-none">🌱 SmartKrishi</a></h4>
-       <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-                <a href="/admin/users/" class="nav-link text-white"><i class="bi bi-person"></i> Users</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="/admin/vegetables/" class="nav-link text-white"><i class="bi bi-basket"></i> Vegetables</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="/admin/reports/" class="nav-link text-white"><i class="bi bi-bug"></i> Pest Reports</a>
-            </li>
-            <li class="nav-item mb-2">
-                <a href="/admin/news/" class="nav-link text-white"><i class="bi bi-newspaper"></i> News</a>
-            </li>
-        </ul>
+  <div class="d-flex flex-column flex-md-row" style="height: 100vh;">
+    <!-- Sidebar -->
+    <div
+      id="sidebarMenu"
+      class="collapse d-md-block bg-dark text-white p-3"
+      style="width: 220px; flex-shrink: 0; overflow-y: auto;"
+    >
+      <h4 class="mb-4">
+        <a href="/admin/users/" class="text-white text-decoration-none">🌱 SmartKrishi</a>
+      </h4>
+      <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+          <a href="/admin/users/" class="nav-link text-white"><i class="bi bi-person"></i> Users</a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="/admin/vegetables/" class="nav-link text-white"><i class="bi bi-basket"></i> Vegetables</a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="/admin/reports/" class="nav-link text-white"><i class="bi bi-bug"></i> Pest Reports</a>
+        </li>
+        <li class="nav-item mb-2">
+          <a href="/admin/news/" class="nav-link text-white"><i class="bi bi-newspaper"></i> News</a>
+        </li>
+      </ul>
     </div>
 
-    <!-- Main Content (scrollable) -->
-    <div class="flex-grow-1 overflow-auto p-4 bg-light" style="min-width: 0;">
-        {% block body %}
-        {% endblock %}
-    </div>
-</div>
+    <!-- Main content -->
+    <main
+      class="flex-grow-1 overflow-auto p-4 bg-light"
+      style="min-width: 0;"
+      id="mainContent"
+    >
+      {% block body %}
+      {% endblock %}
+    </main>
+  </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap 5 JS bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const sidebar = document.getElementById('sidebarMenu');
+    const body = document.body;
+
+    // Add/remove class on body to show/hide overlay when sidebar is toggled
+    sidebar.addEventListener('show.bs.collapse', () => {
+      body.classList.add('sidebar-open');
+    });
+
+    sidebar.addEventListener('hide.bs.collapse', () => {
+      body.classList.remove('sidebar-open');
+    });
+
+    // Optional: Close sidebar when a sidebar nav link is clicked (mobile)
+    document.querySelectorAll('#sidebarMenu a.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        const bsCollapse = bootstrap.Collapse.getInstance(sidebar);
+        if (bsCollapse) bsCollapse.hide();
+      });
+    });
+  </script>
 </body>
 </html>
