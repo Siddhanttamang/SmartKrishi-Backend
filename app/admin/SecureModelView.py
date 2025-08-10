@@ -3,6 +3,7 @@ from flask_login import current_user
 from flask import redirect, url_for
 
 class SecureModelView(ModelView):
+    can_delete = False  # Disable delete permission in the view
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role == 'admin'
@@ -15,3 +16,4 @@ class SecureModelView(ModelView):
         if 'delete' in actions:
             del actions['delete']
         return actions
+
