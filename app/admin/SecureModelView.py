@@ -4,9 +4,14 @@ from flask import redirect, url_for
 
 class SecureModelView(ModelView):
 
-
     def is_accessible(self):
         return current_user.is_authenticated and current_user.role == 'admin'
 
     def inaccessible_callback(self, name, **kwargs):
         return redirect(url_for('admin_auth.login'))
+
+    def get_actions(self):
+        actions = super().get_actions()
+        if 'delete' in actions:
+            del actions['delete']
+        return actions
