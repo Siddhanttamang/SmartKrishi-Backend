@@ -11,10 +11,16 @@ def get_weather(city):
 
     if response.status_code != 200:
         return {"error": "City not found or API error"}
-    
+
     data = response.json()
     return {
         "city": data["name"],
         "temperature": int(data["main"]["temp"]),
-        "weather": data["weather"][0]["description"]
+        "feels_like": int(data["main"]["feels_like"]),
+        "humidity": data["main"]["humidity"],
+        "wind_speed": data["wind"]["speed"],
+        "description": data["weather"][0]["description"],
+        "icon": data["weather"][0]["icon"]
     }
+
+

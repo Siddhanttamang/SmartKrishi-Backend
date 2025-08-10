@@ -10,7 +10,7 @@ class ReportAdmin(SecureModelView):
 
     column_list = ('user_id', 'crop_name', 'disease', 'recommendation', 'image_url', 'created_at')
     column_searchable_list = ('crop_name', 'disease')
-    column_filters = ('created_at',)
+
 
     form_overrides = {
         'recommendation': TextAreaField

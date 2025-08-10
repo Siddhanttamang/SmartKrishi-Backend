@@ -11,7 +11,7 @@ class NewsAdmin(SecureModelView):
     can_delete = True
     can_edit = True
     column_searchable_list = ['name']
-    column_sortable_list = ['name', 'price', 'updated_at']
+    column_sortable_list = ['name', 'price','created_at', 'updated_at']
     column_list = ['name', 'price', 'created_at', 'updated_at']
 
 
