@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask import render_template
 from datetime import timedelta
 
 from app.utils.extensions import login_manager
@@ -86,7 +87,7 @@ def create_app():
     # Root
     @app.route('/')
     def home():
-        return '<h1>Welcome to Smart Krishi API</h1>'
+        return render_template('admin/landing.html')
 
     # Serve uploaded images
     @app.route('/uploads/<filename>')

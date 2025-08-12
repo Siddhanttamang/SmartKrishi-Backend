@@ -1,0 +1,76 @@
+<!-- templates/admin/landing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome - Smart Krishi Admin</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #1f2937;
+      margin: 0;
+    }
+    .container {
+      background: #ffffff;
+      padding: 3rem 4rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      transition: all 0.3s ease;
+    }
+    .container:hover {
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+      transform: translateY(-2px);
+    }
+    h1 {
+      font-weight: 800;
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #2e7d32; /* Fresh green */
+    }
+    p {
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      color: #4b5563;
+    }
+    a.btn {
+      background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+      color: white;
+      font-weight: 600;
+      padding: 0.75rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 6px 15px rgba(76, 175, 80, 0.3);
+      transition: all 0.3s ease;
+      display: inline-block;
+      font-size: 1.1rem;
+    }
+    a.btn:hover {
+      background: linear-gradient(90deg, #388e3c 0%, #4caf50 100%);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(56, 142, 60, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" role="main">
+    <h1>Welcome to Smart Krishi</h1>
+    <p>Empowering agriculture with smart technology</p>
+    <a href="/admin/login" class="btn" role="button">Go to Admin Dashboard</a>
+  </div>
+
+</body>
+</html>
